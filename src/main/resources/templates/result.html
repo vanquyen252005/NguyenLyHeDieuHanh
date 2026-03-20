@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kết quả SRTF</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #aaa; padding: 10px; text-align: center; }
+        th { background-color: #f4f4f4; }
+        .metrics { background-color: #e9ecef; padding: 20px; margin-top: 20px; border-radius: 5px; }
+        .metrics span { font-weight: bold; color: #d9534f; }
+        .btn { padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; display: inline-block; margin-top: 20px;}
+        /* CSS cho biểu đồ Gantt */
+.gantt-container {
+    margin: 40px 0;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.gantt-chart {
+    display: flex;
+    height: 50px;
+    border: 2px solid #343a40;
+    margin-bottom: 20px;
+}
+.gantt-block {
+    position: relative;
+    border-right: 2px solid #343a40;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    background-color: #e9ecef;
+}
+.gantt-block.idle { background-color: #f8d7da; color: #721c24; }
+.gantt-block:last-child { border-right: none; }
+.time-label-start {
+    position: absolute;
+    bottom: -25px;
+    left: -5px;
+}
+.time-label-end {
+    position: absolute;
+    bottom: -25px;
+    right: -5px;
+}
+    </style>
+</head>
+<body>
+<h2>Kết quả lập lịch SRTF</h2>
+<div class="gantt-container">
+    <h3>Biểu đồ Gantt</h3>
+    <div class="gantt-chart">
+        <div th:each="block, iterStat : ${result.ganttChart}"
+             th:classappend="${block.processName == 'Idle' ? 'idle gantt-block' : 'gantt-block'}"
+             th:style="'flex-grow: ' + ${block.duration}">
+
+            <span th:text="${block.processName}"></span>
+
+            <span class="time-label-start" th:text="${block.startTime}"></span>
+
+            <span class="time-label-end" th:if="${iterStat.last}" th:text="${block.endTime}"></span>
+        </div>
+    </div>
+</div>
+<table>
+    <thead>
+    <tr>
+        <th>Process ID</th>
+        <th>Arrival Time</th>
+        <th>Burst Time</th>
+        <th>Start Time</th>
+        <th>Completion Time</th>
+        <th>Turnaround Time (TAT)</th>
+        <th>Waiting Time (WT)</th>
+        <th>Response Time (RT)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="p : ${result.processes}">
+        <td th:text="'P' + ${p.processId}"></td>
+        <td th:text="${p.arrivalTime}"></td>
+        <td th:text="${p.burstTime}"></td>
+        <td th:text="${p.startTime}"></td>
+        <td th:text="${p.completionTime}"></td>
+        <td th:text="${p.turnaroundTime}"></td>
+        <td th:text="${p.waitingTime}"></td>
+        <td th:text="${p.response_time}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="metrics">
+    <p>Thời gian chờ trung bình (Average WT): <span th:text="${#numbers.formatDecimal(result.avgWt, 1, 2)}"></span></p>
+    <p>Thời gian lưu chuyển trung bình (Average TAT): <span th:text="${#numbers.formatDecimal(result.avgTat, 1, 2)}"></span></p>
+    <p>Thời gian phản hồi trung bình (Average RT): <span th:text="${#numbers.formatDecimal(result.avgRes, 1, 2)}"></span></p>
+    <p>Thông lượng (Throughput): <span th:text="${#numbers.formatDecimal(result.throughput, 1, 4)}"></span> tiến trình / đv tg</p>
+    <p>Số lần chuyển trạng thái (Context Switches): <span th:text="${result.contextSwitches}"></span></p>
+</div>
+
+<a href="/" class="btn">Thử lại với dữ liệu mới</a>
+
+</body>
+</html>

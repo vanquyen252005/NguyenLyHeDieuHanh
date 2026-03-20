@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nhập liệu SRTF</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #aaa; padding: 10px; text-align: center; }
+        th { background-color: #f4f4f4; }
+        .btn { padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; margin-top: 20px; font-size: 16px;}
+        .btn-blue { background-color: #007bff; }
+    </style>
+</head>
+<body>
+<h2>Cấu hình tiến trình (Thuật toán SRTF)</h2>
+
+<div>
+    <label>Số lượng Process:</label>
+    <input type="number" id="numProcesses" min="1" value="3">
+    <button class="btn btn-blue" type="button" onclick="generateTable()">Tạo bảng</button>
+</div>
+
+<form th:action="@{/calculate}" th:object="${processForm}" method="post">
+    <table id="processTable">
+        <thead>
+        <tr>
+            <th>Process ID</th>
+            <th>Arrival Time</th>
+            <th>Burst Time</th>
+            <th>Priority</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn">Chạy thuật toán</button>
+</form>
+
+<script>
+    function generateTable() {
+        const num = document.getElementById('numProcesses').value;
+        const tbody = document.querySelector('#processTable tbody');
+        tbody.innerHTML = '';
+
+        for (let i = 0; i < num; i++) {
+            // Quy tắc đặt name="" rất quan trọng để Spring bọc vào List<Process>
+            tbody.innerHTML += `
+                <tr>
+                    <td><input type="number" name="processes[${i}].processId" value="${i+1}" required></td>
+                    <td><input type="number" name="processes[${i}].arrivalTime" value="0" required></td>
+                    <td><input type="number" name="processes[${i}].burstTime" value="1" required></td>
+                    <td><input type="number" name="processes[${i}].priority" value="1" required></td>
+                </tr>
+            `;
+        }
+    }
+    // Gọi hàm tạo bảng mặc định khi load trang
+    window.onload = generateTable;
+</script>
+</body>
+</html>
