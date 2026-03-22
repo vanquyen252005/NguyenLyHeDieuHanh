@@ -15,23 +15,31 @@ public class ShedulingController {
     @Autowired
     private SchedulingService schedulingService;
 
-    // Trang 1: Hiển thị form nhập liệu
+
     @GetMapping("/")
     public String showInputPage(Model model) {
         model.addAttribute("processForm", new ProcessForm());
         return "input"; // Gọi file input.html
     }
 
-    // Nút submit ở trang 1 sẽ gọi vào đây
     @PostMapping("/calculate")
-    public String calculateSRTF(@ModelAttribute ProcessForm processForm, Model model) {
-        // Gọi service xử lý thuật toán
-        ScheduleResult result = schedulingService.runSrtf(processForm.getProcesses());
+    public String calculateAlgorithm(
+            @RequestParam("algorithmType") String algorithmType,
+            @ModelAttribute ProcessForm processForm,
+            Model model) {
 
-        // Gắn kết quả vào Model để truyền sang file result.html
+        ScheduleResult result = null;
+
+
+        if ("SRTF".equals(algorithmType)) {
+            result = schedulingService.runSrtf(processForm.getProcesses());
+        } else if ("SJF".equals(algorithmType)) {
+            result = schedulingService.runSjf(processForm.getProcesses());
+        }
+
         model.addAttribute("result", result);
+        model.addAttribute("algoName", algorithmType); // Truyền tên thuật toán sang trang kết quả
 
-        // Chuyển hướng sang trang kết quả
-        return "result"; // Gọi file result.html
+        return "result";
     }
 }

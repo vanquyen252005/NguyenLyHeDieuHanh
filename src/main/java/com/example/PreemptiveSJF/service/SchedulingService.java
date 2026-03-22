@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.example.PreemptiveSJF.model.Process;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.lang.Math.max;
@@ -14,6 +15,75 @@ import static java.lang.Math.min;
 
 @Service
 public class SchedulingService {
+    public ScheduleResult runSjf(List<Process> p) {
+
+        for (int i = 0; i < p.size(); i++) {
+            for (int j = i; j < p.size(); j++) {
+                if (p.get(j).getArrivalTime() < p.get(i).getArrivalTime()) {
+                    Collections.swap(p, i, j);
+                } else if (p.get(j).getArrivalTime() == p.get(i).getArrivalTime()) {
+                    if (p.get(j).getBurstTime() < p.get(i).getBurstTime()) {
+                        Collections.swap(p, i, j);
+                    }
+                }
+            }
+        }
+
+        List<GanttRecord> ganttChart = new ArrayList<>();
+        int index = 0;
+        boolean check = false;
+
+        // 2. Logic chạy thuật toán sjf
+        for (int i = 0; i < p.size(); i++) {
+            check = false;
+            if (i == 0) {
+                p.get(i).setStartTime(p.get(i).getArrivalTime());
+                // Ghi nhận Idle nếu tiến trình đầu tiên không đến ở t=0
+                if (p.get(i).getStartTime() > 0) {
+                    ganttChart.add(new GanttRecord("Idle", 0, p.get(i).getStartTime()));
+                }
+            } else {
+                for (int j = i; j < p.size(); j++) {
+                    if (p.get(j).getArrivalTime() <= p.get(index).getCompletionTime()) {
+                        check = true;
+                        break;
+                    }
+                }
+                if (check) {
+                    for (int j = i; j < p.size(); j++) {
+                        if (p.get(j).getArrivalTime() <= p.get(index).getCompletionTime()) {
+                            if (p.get(j).getBurstTime() < p.get(i).getBurstTime()) {
+                                Collections.swap(p, i, j);
+                            }
+                        }
+                    }
+                    p.get(i).setStartTime(p.get(index).getCompletionTime());
+                } else {
+                    // Ghi nhận CPU Idle nếu có khoảng trống
+                    ganttChart.add(new GanttRecord("Idle", p.get(index).getCompletionTime(), p.get(i).getArrivalTime()));
+                    p.get(i).setStartTime(p.get(i).getArrivalTime());
+                }
+            }
+
+            // 3. Cập nhật các thông số (Dùng getter/setter đúng với Process.java)
+            p.get(i).setWaitingTime(p.get(i).getStartTime() - p.get(i).getArrivalTime());
+            p.get(i).setResponse_time(p.get(i).getStartTime() - p.get(i).getArrivalTime());
+            p.get(i).setCompletionTime(p.get(i).getStartTime() + p.get(i).getBurstTime());
+            p.get(i).setTurnaroundTime(p.get(i).getCompletionTime() - p.get(i).getArrivalTime());
+
+            // Ghi nhận tiến trình đang chạy vào Gantt Chart
+            ganttChart.add(new GanttRecord("P" + p.get(i).getProcessId(), p.get(i).getStartTime(), p.get(i).getCompletionTime()));
+
+            index = i;
+        }
+
+        //  số lần chuyển trạng thái chính bằng số tiến trình
+        int cnt = p.size();
+        ScheduleResult result = calculateMetrics(p, cnt);
+        result.setGanttChart(ganttChart);
+
+        return result;
+    }
     public ScheduleResult runSrtf(List<Process> p) {
         boolean[] is_complete = new boolean[p.size()];
         int complete = 0;

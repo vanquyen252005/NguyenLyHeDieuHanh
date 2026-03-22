@@ -15,6 +15,6 @@ public class GanttRecord {
     public int getStartTime() { return startTime; }
     public int getEndTime() { return endTime; }
 
-    // Thuộc tính này để CSS tính tỷ lệ độ rộng của khối trên màn hình
+
     public int getDuration() { return endTime - startTime; }
 }
