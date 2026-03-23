@@ -93,11 +93,11 @@
 </table>
 
 <div class="metrics">
-    <p>Thời gian chờ trung bình (Average WT): <span th:text="${#numbers.formatDecimal(result.avgWt, 1, 2)}"></span></p>
-    <p>Thời gian lưu chuyển trung bình (Average TAT): <span th:text="${#numbers.formatDecimal(result.avgTat, 1, 2)}"></span></p>
-    <p>Thời gian phản hồi trung bình (Average RT): <span th:text="${#numbers.formatDecimal(result.avgRes, 1, 2)}"></span></p>
-    <p>Thông lượng (Throughput): <span th:text="${#numbers.formatDecimal(result.throughput, 1, 4)}"></span> tiến trình / đv tg</p>
-    <p>Số lần chuyển trạng thái (Context Switches): <span th:text="${result.contextSwitches}"></span></p>
+    <p>Thời gian chờ trung bình: <span th:text="${#numbers.formatDecimal(result.avgWt, 1, 2)}"></span></p>
+    <p>Thời gian lưu chuyển trung bình: <span th:text="${#numbers.formatDecimal(result.avgTat, 1, 2)}"></span></p>
+    <p>Thời gian phản hồi trung bình: <span th:text="${#numbers.formatDecimal(result.avgRes, 1, 2)}"></span></p>
+    <p>Thông lượng : <span th:text="${#numbers.formatDecimal(result.throughput, 1, 4)}"></span> </p>
+    <p>Số lần chuyển trạng thái: <span th:text="${result.contextSwitches}"></span></p>
 </div>
 
 <a href="/" class="btn">Thử lại với dữ liệu mới</a>

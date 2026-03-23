@@ -78,7 +78,7 @@ public class SchedulingService {
         }
 
 
-        int cnt = p.size();
+        int cnt = p.size()-1;
         ScheduleResult result = calculateMetrics(p, cnt);
         result.setGanttChart(ganttChart);
 
