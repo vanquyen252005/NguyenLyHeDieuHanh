@@ -19,7 +19,7 @@ public class ShedulingController {
     @GetMapping("/")
     public String showInputPage(Model model) {
         model.addAttribute("processForm", new ProcessForm());
-        return "input"; // Gọi file input.html
+        return "input";
     }
 
     @PostMapping("/calculate")
@@ -38,7 +38,7 @@ public class ShedulingController {
         }
 
         model.addAttribute("result", result);
-        model.addAttribute("algoName", algorithmType); // Truyền tên thuật toán sang trang kết quả
+        model.addAttribute("algoName", algorithmType);
 
         return "result";
     }

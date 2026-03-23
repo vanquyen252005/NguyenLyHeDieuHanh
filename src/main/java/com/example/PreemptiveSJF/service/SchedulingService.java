@@ -33,12 +33,12 @@ public class SchedulingService {
         int index = 0;
         boolean check = false;
 
-        // 2. Logic chạy thuật toán sjf
+
         for (int i = 0; i < p.size(); i++) {
             check = false;
             if (i == 0) {
                 p.get(i).setStartTime(p.get(i).getArrivalTime());
-                // Ghi nhận Idle nếu tiến trình đầu tiên không đến ở t=0
+
                 if (p.get(i).getStartTime() > 0) {
                     ganttChart.add(new GanttRecord("Idle", 0, p.get(i).getStartTime()));
                 }
@@ -59,25 +59,25 @@ public class SchedulingService {
                     }
                     p.get(i).setStartTime(p.get(index).getCompletionTime());
                 } else {
-                    // Ghi nhận CPU Idle nếu có khoảng trống
+
                     ganttChart.add(new GanttRecord("Idle", p.get(index).getCompletionTime(), p.get(i).getArrivalTime()));
                     p.get(i).setStartTime(p.get(i).getArrivalTime());
                 }
             }
 
-            // 3. Cập nhật các thông số (Dùng getter/setter đúng với Process.java)
+
             p.get(i).setWaitingTime(p.get(i).getStartTime() - p.get(i).getArrivalTime());
             p.get(i).setResponse_time(p.get(i).getStartTime() - p.get(i).getArrivalTime());
             p.get(i).setCompletionTime(p.get(i).getStartTime() + p.get(i).getBurstTime());
             p.get(i).setTurnaroundTime(p.get(i).getCompletionTime() - p.get(i).getArrivalTime());
 
-            // Ghi nhận tiến trình đang chạy vào Gantt Chart
+
             ganttChart.add(new GanttRecord("P" + p.get(i).getProcessId(), p.get(i).getStartTime(), p.get(i).getCompletionTime()));
 
             index = i;
         }
 
-        //  số lần chuyển trạng thái chính bằng số tiến trình
+
         int cnt = p.size();
         ScheduleResult result = calculateMetrics(p, cnt);
         result.setGanttChart(ganttChart);
@@ -160,7 +160,7 @@ public class SchedulingService {
         return result;
     }
 
-    // Logic tính toán trung bình được tách riêng
+
     private ScheduleResult calculateMetrics(List<Process> p, int contextSwitches) {
         int wt = 0, tat = 0, res = 0;
         int complete_max = p.get(0).getCompletionTime();

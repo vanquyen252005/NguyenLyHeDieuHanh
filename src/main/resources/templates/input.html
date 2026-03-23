@@ -25,8 +25,8 @@
     <div style="margin-top: 15px; margin-bottom: 15px;">
         <label style="font-weight: bold; font-size: 16px;">Chọn thuật toán:</label>
         <select name="algorithmType" style="padding: 8px; font-size: 16px; margin-left: 10px;">
-            <option value="SJF">SJF (Không độc quyền)</option>
-            <option value="SRTF">SRTF (Có độc quyền)</option>
+            <option value="SJF">SJF</option>
+            <option value="SRTF">SRTF</option>
         </select>
     </div>
     <table id="processTable">
@@ -52,7 +52,7 @@
         tbody.innerHTML = '';
 
         for (let i = 0; i < num; i++) {
-            // Quy tắc đặt name="" rất quan trọng để Spring bọc vào List<Process>
+
             tbody.innerHTML += `
                 <tr>
                     <td><input type="number" name="processes[${i}].processId" value="${i+1}" required></td>
@@ -63,7 +63,7 @@
             `;
         }
     }
-    // Gọi hàm tạo bảng mặc định khi load trang
+
     window.onload = generateTable;
 </script>
 </body>
